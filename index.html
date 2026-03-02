@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGTechSkillz — Singapore Tech Job Market Skills</title>
+  <meta name="description" content="Explore the most in-demand tech skills in Singapore's job market. Filter by role, seniority, and work type. Find real jobs to apply to.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <h1 class="site-title">SG<span class="accent">Tech</span>Skillz</h1>
+      <p class="site-tagline">Singapore tech job market skills dashboard</p>
+    </div>
+    <div class="header-stats" id="header-stats" aria-live="polite">
+      <!-- Populated by JS -->
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <!-- Filter Sidebar -->
+    <aside class="filters" aria-label="Filters">
+      <h2 class="filters-heading">Filters</h2>
+      <button type="button" class="filter-reset" id="filter-reset" hidden>Clear all</button>
+
+      <fieldset class="filter-group" id="filter-work-type">
+        <legend>Work Type</legend>
+      </fieldset>
+
+      <fieldset class="filter-group" id="filter-seniority">
+        <legend>Seniority</legend>
+      </fieldset>
+
+      <fieldset class="filter-group" id="filter-role-category">
+        <legend>Role Category</legend>
+      </fieldset>
+    </aside>
+
+    <!-- Main Content -->
+    <section class="content" aria-label="Skills data">
+      <!-- Category Tabs -->
+      <nav class="tab-bar" role="tablist" aria-label="Skill categories">
+        <!-- Populated by JS -->
+      </nav>
+
+      <!-- Time Range -->
+      <div class="time-range" id="time-range" role="group" aria-label="Time range">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Skills Table -->
+      <div class="table-container" role="tabpanel" id="skills-panel">
+        <table class="skills-table" id="skills-table">
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th class="col-skill">
+                <button type="button" class="sort-btn" data-sort="skill">
+                  Skill <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th class="col-count">
+                <button type="button" class="sort-btn active" data-sort="count">
+                  Jobs <span class="sort-indicator" aria-hidden="true">&#9660;</span>
+                </button>
+              </th>
+              <th class="col-pct">
+                <button type="button" class="sort-btn" data-sort="pct">
+                  % <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th class="col-bar" aria-hidden="true"></th>
+            </tr>
+          </thead>
+          <tbody id="skills-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+        <p class="empty-state" id="empty-state" hidden>No skills match your current filters.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Drill-down Dialog -->
+  <dialog id="drill-down" class="drill-down">
+    <header class="drill-header">
+      <h2 class="drill-title" id="drill-title"></h2>
+      <span class="drill-count" id="drill-count"></span>
+      <button type="button" class="drill-close" id="drill-close" aria-label="Close">&times;</button>
+    </header>
+    <ul class="job-list" id="drill-jobs">
+      <!-- Populated by JS -->
+    </ul>
+  </dialog>
+
+  <footer class="site-footer">
+    <p>Data sourced from JobStreet Singapore. Skills extracted via LLM analysis.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
