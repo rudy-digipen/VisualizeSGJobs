@@ -111,3 +111,21 @@ These apply across all layers, all projects, all frameworks:
 - Never create `<div>` soup. Structure matters.
 - Never use `!important` unless overriding third-party styles.
 - Never ignore performance. Measure, then optimize.
+
+---
+
+## Git Commit Message Format
+
+When asked to generate a commit message from staged files:
+
+1. **Review first.** Run `git status`, `git diff --cached --stat`, and spot-check diffs for secrets, credentials, or files that shouldn't be committed. Report findings before proposing a message.
+2. **Use this format:**
+
+```
+<1-2 sentence summary communicating the what & why>
+
+- <file1> — <file1 details>
+- <file2> — <file2 details>
+- ...
+- <fileN> — <fileN details>
+```
