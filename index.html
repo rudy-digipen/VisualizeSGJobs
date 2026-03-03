@@ -21,6 +21,26 @@
       <h1 class="site-title">SG<span class="accent">Tech</span>Skillz</h1>
       <p class="site-tagline">Singapore tech job market skills dashboard</p>
     </div>
+    <div class="header-actions">
+      <search class="search-bar">
+        <label for="search-input" class="visually-hidden">Search jobs</label>
+        <input type="search" id="search-input" placeholder="Search jobs, skills, companies..." autocomplete="off">
+      </search>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" data-theme="auto">
+        <svg class="theme-icon theme-icon-auto" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 3v10a5 5 0 010-10z" fill="currentColor"/>
+        </svg>
+        <svg class="theme-icon theme-icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg class="theme-icon theme-icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.36 10.06A6 6 0 015.94 2.64 6 6 0 1013.36 10.06z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="theme-label">Auto</span>
+      </button>
+    </div>
     <div class="header-stats" id="header-stats" aria-live="polite">
       <!-- Populated by JS -->
     </div>
@@ -43,50 +63,114 @@
       <fieldset class="filter-group" id="filter-role-category">
         <legend>Role Category</legend>
       </fieldset>
+
+      <fieldset class="filter-group" id="filter-industry">
+        <legend>Industry</legend>
+      </fieldset>
+
+      <fieldset class="filter-group" id="filter-company-type">
+        <legend>Company Type</legend>
+      </fieldset>
     </aside>
 
     <!-- Main Content -->
-    <section class="content" aria-label="Skills data">
-      <!-- Category Tabs -->
-      <nav class="tab-bar" role="tablist" aria-label="Skill categories">
-        <!-- Populated by JS -->
+    <section class="content" aria-label="Dashboard data">
+      <!-- View Switcher -->
+      <nav class="view-bar" role="tablist" aria-label="Dashboard views">
+        <button type="button" role="tab" class="view-btn" aria-selected="true" data-view="skills">Skills</button>
+        <button type="button" role="tab" class="view-btn" aria-selected="false" data-view="companies">Companies & Industries</button>
+        <button type="button" role="tab" class="view-btn" aria-selected="false" data-view="seniority">Seniority</button>
       </nav>
 
-      <!-- Time Range -->
-      <div class="time-range" id="time-range" role="group" aria-label="Time range">
-        <!-- Populated by JS -->
-      </div>
+      <!-- Skills Panel -->
+      <section class="view-panel" id="skills-panel">
+        <!-- Category Tabs -->
+        <nav class="tab-bar" role="tablist" aria-label="Skill categories">
+          <!-- Populated by JS -->
+        </nav>
 
-      <!-- Skills Table -->
-      <div class="table-container" role="tabpanel" id="skills-panel">
-        <table class="skills-table" id="skills-table">
+        <!-- Time Range -->
+        <div class="time-range" id="time-range" role="group" aria-label="Time range">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Word Cloud Toggle -->
+        <div class="view-controls">
+          <button type="button" class="view-toggle" id="toggle-wordcloud" aria-pressed="false" aria-controls="wordcloud-panel">
+            Word Cloud
+          </button>
+        </div>
+
+        <!-- Word Cloud -->
+        <div class="wordcloud-panel" id="wordcloud-panel" hidden>
+          <svg id="wordcloud-svg" role="img" aria-label="Word cloud of skills"></svg>
+        </div>
+
+        <!-- Skills Table -->
+        <div class="table-container">
+          <table class="skills-table" id="skills-table">
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-skill">
+                  <button type="button" class="sort-btn" data-sort="skill">
+                    Skill <span class="sort-indicator" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th class="col-count">
+                  <button type="button" class="sort-btn active" data-sort="count">
+                    Jobs <span class="sort-indicator" aria-hidden="true">&#9660;</span>
+                  </button>
+                </th>
+                <th class="col-pct">
+                  <button type="button" class="sort-btn" data-sort="pct">
+                    % <span class="sort-indicator" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th class="col-bar" aria-hidden="true"></th>
+              </tr>
+            </thead>
+            <tbody id="skills-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+          <p class="empty-state" id="empty-state" hidden>No skills match your current filters.</p>
+        </div>
+      </section>
+
+      <!-- Companies & Industries Panel -->
+      <section class="view-panel" id="companies-panel" hidden>
+        <h2 class="panel-heading">Industries</h2>
+        <div class="bar-chart" id="industry-chart" role="img" aria-label="Industries by job count"></div>
+
+        <h2 class="panel-heading">Company Types</h2>
+        <div class="bar-chart" id="company-type-chart" role="img" aria-label="Company types by job count"></div>
+
+        <h2 class="panel-heading">Top Companies</h2>
+        <table class="companies-table" id="companies-table">
           <thead>
             <tr>
-              <th class="col-rank">#</th>
-              <th class="col-skill">
-                <button type="button" class="sort-btn" data-sort="skill">
-                  Skill <span class="sort-indicator" aria-hidden="true"></span>
-                </button>
-              </th>
-              <th class="col-count">
-                <button type="button" class="sort-btn active" data-sort="count">
-                  Jobs <span class="sort-indicator" aria-hidden="true">&#9660;</span>
-                </button>
-              </th>
-              <th class="col-pct">
-                <button type="button" class="sort-btn" data-sort="pct">
-                  % <span class="sort-indicator" aria-hidden="true"></span>
-                </button>
-              </th>
-              <th class="col-bar" aria-hidden="true"></th>
+              <th>Company</th>
+              <th class="col-count">Jobs</th>
+              <th>Industry</th>
+              <th>Type</th>
             </tr>
           </thead>
-          <tbody id="skills-tbody">
-            <!-- Populated by JS -->
-          </tbody>
+          <tbody id="companies-tbody"></tbody>
         </table>
-        <p class="empty-state" id="empty-state" hidden>No skills match your current filters.</p>
-      </div>
+      </section>
+
+      <!-- Seniority Panel -->
+      <section class="view-panel" id="seniority-panel" hidden>
+        <h2 class="panel-heading">Seniority Distribution</h2>
+        <div class="bar-chart" id="seniority-chart" role="img" aria-label="Jobs by seniority level"></div>
+      </section>
+
+      <!-- Search Results Panel -->
+      <section class="view-panel" id="search-panel" hidden>
+        <p class="search-status" id="search-status"></p>
+        <ul class="job-list search-results-list" id="search-results"></ul>
+      </section>
     </section>
   </main>
 
@@ -97,6 +181,10 @@
       <span class="drill-count" id="drill-count"></span>
       <button type="button" class="drill-close" id="drill-close" aria-label="Close">&times;</button>
     </header>
+    <div class="co-occurrence" id="drill-cooccurrence" hidden>
+      <h3 class="co-occurrence-heading">Often paired with</h3>
+      <ul class="co-occurrence-list" id="co-occurrence-list"></ul>
+    </div>
     <ul class="job-list" id="drill-jobs">
       <!-- Populated by JS -->
     </ul>
