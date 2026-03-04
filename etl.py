@@ -41,54 +41,177 @@ BA_SKILL_COLUMNS = {
 # --- Normalization maps ---
 
 SKILL_NORMALIZE = {
-    # Case variants
+    # .NET family
+    ".Net": ".NET",
     ".Net Core": ".NET Core",
     ".Net Framework": ".NET Framework",
+    "ASP.Net MVC": "ASP.NET MVC",
+    "VB.Net": "VB.NET",
+    # 3D / Design tools
     "3DS Max": "3ds Max",
-    "async programming": "Async Programming",
     "Autocad": "AutoCAD",
     "Auto-Cad": "AutoCAD",
     "CAD Software": "CAD software",
     "Capcut": "CapCut",
-    "CI/CD Pipelines": "CI/CD",
-    "CI/CD pipelines": "CI/CD",
-    "Cloud computing": "Cloud Computing",
-    "CRM Systems": "CRM systems",
     "Davinci Resolve": "DaVinci Resolve",
-    "ERP Systems": "ERP systems",
     "Hubspot": "HubSpot",
-    "Interior design": "Interior Design",
-    "JIRA": "Jira",
-    "MacOS": "macOS",
-    "Microsoft Office suite": "Microsoft Office Suite",
-    "MS suite": "MS Suite",
-    "performance optimization": "Performance Optimization",
-    "Pytorch": "PyTorch",
-    "Responsive design": "Responsive Design",
     "Sketchup": "SketchUp",
     "Sketch-up": "SketchUp",
+    "Protopie": "ProtoPie",
+    "Powerpoint": "PowerPoint",
+    "Solarwinds": "SolarWinds",
+    "Unifi": "UniFi",
+    # Languages & frameworks
+    "Typescript": "TypeScript",
+    "Javascript": "JavaScript",
+    "Pytorch": "PyTorch",
+    "Golang": "Go",
+    "GoLang": "Go",
+    "JQuery": "jQuery",
+    "Junit": "JUnit",
+    "Vue.JS": "Vue.js",
+    "webpack": "Webpack",
+    "Websockets": "WebSockets",
+    "xCode": "Xcode",
+    "Gitlab": "GitLab",
+    "Gitlab CI/CD": "GitLab CI/CD",
+    "Github Actions": "GitHub Actions",
+    "BitBucket": "Bitbucket",
+    "Cloudformation": "CloudFormation",
+    "Cloudfront": "CloudFront",
+    "Cloudwatch": "CloudWatch",
+    "Cocoapods": "CocoaPods",
+    "EtherCat": "EtherCAT",
+    "Profinet": "ProfiNet",
+    "Martech": "MarTech",
+    # CI/CD consolidation
+    "CI/CD Pipelines": "CI/CD",
+    "CI/CD pipelines": "CI/CD",
+    # Case normalization — concepts & domains
+    "async programming": "Async Programming",
+    "asynchronous programming": "Asynchronous Programming",
+    "Agile methodologies": "Agile Methodologies",
+    "Agile methodology": "Agile Methodologies",
+    "Agile Methodology": "Agile Methodologies",
+    "AI tools": "AI Tools",
+    "algorithms": "Algorithms",
+    "attention to detail": "Attention to Detail",
+    "automated testing": "Automated Testing",
+    "Automated testing": "Automated Testing",
+    "automation": "Automation",
+    "capital markets": "Capital Markets",
+    "Cloud computing": "Cloud Computing",
+    "cloud platforms": "Cloud Platforms",
+    "cloud services": "Cloud Services",
+    "Cloud technologies": "Cloud Technologies",
+    "compliance": "Compliance",
+    "concurrency": "Concurrency",
+    "CRM Systems": "CRM systems",
+    "customer service": "Customer Service",
+    "cybersecurity": "Cybersecurity",
+    "data analytics": "Data Analytics",
+    "data pipelines": "Data Pipelines",
+    "data structures": "Data Structures",
+    "databases": "Databases",
+    "Design systems": "Design Systems",
+    "Distributed systems": "Distributed Systems",
+    "distributed systems": "Distributed Systems",
+    "e-commerce": "E-commerce",
+    "Embedded systems": "Embedded Systems",
+    "ERP Systems": "ERP systems",
+    "finance": "Finance",
+    "FinTech": "Fintech",
+    "Game development": "Game Development",
+    "generative AI": "Generative AI",
+    "Healthcare systems": "Healthcare Systems",
+    "Information architecture": "Information Architecture",
+    "Interaction design": "Interaction Design",
+    "Interior design": "Interior Design",
+    "IT infrastructure": "IT Infrastructure",
+    "logistics": "Logistics",
+    "machine learning": "Machine Learning",
+    "MacOS": "macOS",
+    "Microsoft Office suite": "Microsoft Office Suite",
+    "Microsoft design guidelines": "Microsoft Design Guidelines",
+    "Microsoft technologies": "Microsoft Technologies",
+    "Motion design": "Motion Design",
+    "MS suite": "MS Suite",
+    "networking": "Networking",
+    "numpy": "NumPy",
+    "Object-Oriented Programming": "Object-oriented programming",
+    "Object-Oriented Programming (OOP)": "Object-oriented programming (OOP)",
+    "operating systems": "Operating Systems",
+    "Pandas": "pandas",
+    "performance optimization": "Performance Optimization",
+    "problem-solving": "Problem-Solving",
+    "Problem-solving": "Problem-Solving",
+    "Prompt engineering": "Prompt Engineering",
+    "Responsive design": "Responsive Design",
+    "responsive design": "Responsive Design",
+    "retail": "Retail",
+    "risk": "Risk",
+    "risk management": "Risk Management",
+    "Scikit-Learn": "scikit-learn",
+    "SCRUM": "Scrum",
+    "security": "Security",
+    "servers": "Servers",
+    "Shell scripting": "Shell Scripting",
+    "social media": "Social Media",
+    "social media platforms": "Social Media Platforms",
+    "state management": "State Management",
+    "Statistical analysis": "Statistical Analysis",
+    "sustainability": "Sustainability",
+    "System design": "System Design",
+    "Test-driven development": "Test-Driven Development",
     "testing": "Testing",
     "Tiktok": "TikTok",
     "Trade lifecycle": "Trade Lifecycle",
-    "Typescript": "TypeScript",
-    "Javascript": "JavaScript",
-    "risk": "Risk",
+    "UI design": "UI Design",
+    "User experience": "User Experience",
+    "User flows": "User Flows",
+    "User research": "User Research",
+    "Visual design": "Visual Design",
+    "visualization": "Visualization",
+    # Platform case fixes
+    "AZURE": "Azure",
+    "HIVE": "Hive",
+    "JIRA": "Jira",
+    "QT": "Qt",
+    "UNIX": "Unix",
+    "UBUNTU": "Ubuntu",
+    "CENTOS": "CentOS",
+    "SoC": "SOC",
+    "bash": "Bash",
+    "matplotlib": "Matplotlib",
 }
 
 COMPANY_TYPE_NORMALIZE = {
+    # MNC variants
     "Multinational Corporation (MNC)": "MNC",
     "Multinational Corporation": "MNC",
+    "Multinational Conglomerate": "MNC",
     "MNC/Tech Company": "MNC",
     "MNC or Tech Company": "MNC",
     "Global Tech Company": "MNC",
+    "Global Conglomerate": "MNC",
+    "Global Investment Firm": "MNC",
     "Tech Company": "MNC",
+    "Consumer-Facing Tech Company": "MNC",
     "Major Bank": "MNC",
     "Financial Services Company": "MNC",
     "Financial Services Firm": "MNC",
     "Financial Services Group": "MNC",
     "Financial Institution": "MNC",
+    "Enterprise": "MNC",
+    "Established Company": "MNC",
+    "Game Studio, MNC": "MNC",
+    "Agency, MNC": "MNC",
+    # Startup
     "Fintech Startup": "Startup",
+    "Scale-up": "Startup",
+    # SME variants
     "Startup or SME": "SME",
+    "Diversified SME": "SME",
     "Game Studio": "SME",
     "SaaS": "SME",
     "Media Company": "SME",
@@ -96,65 +219,123 @@ COMPANY_TYPE_NORMALIZE = {
     "Restaurant Group": "SME",
     "General Business": "SME",
     "Business": "SME",
-    "Staffing Agency": "Agency",
     "Robotics Company": "SME",
     "Brick-and-mortar business": "SME",
-    "Enterprise": "MNC",
+    "Software Company": "SME",
+    "Workspace Provider": "SME",
+    "Venture Capital": "SME",
+    # Agency
+    "Staffing Agency": "Agency",
+    "Recruitment Agency": "Agency",
+    # Consultancy
+    "SME/Consultancy": "Consultancy",
+    # Government / Education
     "Educational Institution": "Government",
+    "Education": "Government",
     "University": "Government",
     "Government Agency": "Government",
     "Government-Linked Company": "Government",
+    # Non-profit
     "Nonprofit": "Non-profit",
     "Non-profit": "Non-profit",
+    "Non-profit Organization": "Non-profit",
     "Charity": "Non-profit",
+    "Charity/Non-Profit": "Non-profit",
     "Social Enterprise": "Non-profit",
 }
 
 INDUSTRY_NORMALIZE = {
     # Food & Beverage
     "F&B": "Food & Beverage",
+    "F&B, Retail": "Food & Beverage",
     "Food & Agriculture": "Food & Beverage",
+    "Food Services / F&B": "Food & Beverage",
+    "Food and Beverage": "Food & Beverage",
+    "FoodTech": "Food & Beverage",
+    "Agribusiness": "Food & Beverage",
     # E-commerce
     "Retail / eCommerce": "E-commerce",
     "eCommerce": "E-commerce",
     "E-commerce, Digital Entertainment": "E-commerce",
+    "E-commerce, Digital Marketing": "E-commerce",
+    "E-commerce, Digital Services": "E-commerce",
     "E-commerce, Tech": "E-commerce",
     "SaaS, E-commerce": "E-commerce",
+    "Retail, E-commerce": "E-commerce",
     # Retail
     "Fashion/Retail": "Retail",
     "Apparel/Fashion": "Retail",
+    "Apparel/Fashion Retail": "Retail",
     "Apparel & Fashion, Retail": "Retail",
     "Retail or Manufacturing": "Retail",
+    "Retail, Travel": "Retail",
+    "Luxury Goods": "Retail",
+    "Luxury Retail": "Retail",
+    "Furniture": "Retail",
+    "Jewelry": "Retail",
     # Financial Services
     "Finance": "Financial Services",
     "Banking": "Financial Services",
+    "Financial Services, Investment": "Financial Services",
+    "Financial Services, Technology": "Financial Services",
+    "Private Equity": "Financial Services",
+    "Venture Capital": "Financial Services",
     # Artificial Intelligence
     "AI": "Artificial Intelligence",
+    "AI/ML": "Artificial Intelligence",
+    "AI /Robotics Education": "Artificial Intelligence",
     "Artificial Intelligence / Smart Automation": "Artificial Intelligence",
     "Robotics, AI": "Artificial Intelligence",
     "AI, Infrastructure": "Artificial Intelligence",
+    "Technology, AI": "Artificial Intelligence",
     # IT Services
     "Computer and IT": "IT Services",
     "Technology": "IT Services",
     "Technology Services": "IT Services",
     "Technology/IT Services": "IT Services",
+    "Technology/IT": "IT Services",
+    "Technology/Software": "IT Services",
+    "Technology/Computing": "IT Services",
+    "Technology/Cloud Services": "IT Services",
+    "Technology, Digital Services": "IT Services",
+    "Technology, Internet Services": "IT Services",
+    "Technology, SaaS": "IT Services",
+    "Technology Consulting": "IT Services",
     "Tech": "IT Services",
     "Tech/IT": "IT Services",
+    "Tech/Software": "IT Services",
     "ICT": "IT Services",
-    "Technology/Software": "IT Services",
+    "IT": "IT Services",
+    "IT / Information Technology": "IT Services",
     "IT Services, Digital Solutions": "IT Services",
+    "IT Services, SaaS": "IT Services",
+    "IT Infrastructure": "IT Services",
     "Digital Tech": "IT Services",
     "Software Development": "IT Services",
+    "Software": "IT Services",
+    "Software Services": "IT Services",
+    "Software & IT Services": "IT Services",
+    "Software/IT Products": "IT Services",
+    "Enterprise Software": "IT Services",
+    "Enterprise Software, SaaS": "IT Services",
+    "Enterprise Technology": "IT Services",
+    "Enterprise IT": "IT Services",
+    "FinTech, Enterprise Software": "IT Services",
+    "EHS Software": "IT Services",
+    "Infrastructure": "IT Services",
     # Recruitment
     "Staffing/Recruitment": "Recruitment",
     "Staffing & Recruitment": "Recruitment",
     "Staffing": "Recruitment",
     "BPO/Staffing Services": "Recruitment",
+    "Business Process Outsourcing": "Recruitment",
+    "HR Services": "Recruitment",
     # Events
     "Events Management": "Events",
     "Event Management": "Events",
     "Event Technology": "Events",
     "Events & Marketing": "Events",
+    "Events/Experiential Marketing": "Events",
     # Advertising
     "Advertising / Event / Exhibit": "Advertising",
     "Digital Advertising": "Advertising",
@@ -165,6 +346,7 @@ INDUSTRY_NORMALIZE = {
     "Marketing Communications": "Marketing",
     # Consultancy
     "Consulting": "Consultancy",
+    "Consulting, Fintech": "Consultancy",
     "Marketing/Consultancy": "Consultancy",
     # Architecture
     "Architecture/Design": "Architecture",
@@ -174,57 +356,98 @@ INDUSTRY_NORMALIZE = {
     "Architecture/Construction": "Construction",
     "Construction Technology": "Construction",
     "Construction, Architecture": "Construction",
+    "Built Environment": "Construction",
     # Hospitality
     "Tourism/Hospitality": "Hospitality",
+    "Hospitality/Tourism": "Hospitality",
     "Travel & Tourism": "Hospitality",
     "Travel & Hospitality": "Hospitality",
+    "Travel and Hospitality": "Hospitality",
     "Travel, Hospitality, SaaS": "Hospitality",
+    "Travel/Tech Fintech": "Hospitality",
+    "Leisure": "Hospitality",
     # Healthcare
     "Beauty/Healthcare": "Healthcare",
     "Healthcare Technology": "Healthcare",
+    "Biomedical / Pharmaceutical": "Healthcare",
+    # Biotechnology
+    "Biotech": "Biotechnology",
     # Beauty
     "Beauty & Personal Care": "Beauty",
     "Cosmetics": "Beauty",
+    "Fitness": "Beauty",
     # Education
     "Education & Training": "Education",
     "Education/Tech": "Education",
+    "Education/Public Services": "Education",
     "Education Technology (EdTech)": "Education",
+    "EdTech": "Education",
+    "EdTech, SaaS": "Education",
+    "EdTech, IT Services": "Education",
+    "Higher Education": "Education",
     # Robotics
     "Robotics, Automation": "Robotics",
     "Robotics, Technology": "Robotics",
+    "Robotics/Automation": "Robotics",
+    "Robotics and Electronics": "Robotics",
     "Automation and Control Systems": "Robotics",
     "Automation": "Robotics",
+    "Industrial Automation": "Robotics",
     # Manufacturing
     "Industrial Technology": "Manufacturing",
     "Industrial Manufacturing": "Manufacturing",
+    "Industrial": "Manufacturing",
     "Manufacturing General": "Manufacturing",
     "Electronics, Manufacturing": "Manufacturing",
     "Engineering/Industrial": "Manufacturing",
     "Engineering / Technical Services": "Manufacturing",
+    "Engineering": "Manufacturing",
     "Heavy Machinery": "Manufacturing",
+    "Chemicals": "Manufacturing",
     # Electronics
     "Consumer Electronics": "Electronics",
     "Technology/Electronics": "Electronics",
+    # Semiconductor
+    "Semiconductors": "Semiconductor",
     # Real Estate
     "Smart Buildings Technology": "Real Estate",
     "Real Estate/PropTech": "Real Estate",
+    "Real Estate/Hospitality Tech": "Real Estate",
     # Gaming
     "Gaming, Software": "Gaming",
     "Gaming, E-commerce": "Gaming",
     "Gaming, Hospitality": "Gaming",
+    "Gaming, Fintech": "Gaming",
     "Toys & Games": "Gaming",
+    "Toymaking": "Gaming",
     # Entertainment
     "Arts / Entertainment / Recreation": "Entertainment",
     "Arts / Entertainment": "Entertainment",
     "Arts and Crafts": "Entertainment",
+    "Sports": "Entertainment",
     # Fintech
     "Fintech, Social Media": "Fintech",
     "Fintech, E-commerce": "Fintech",
+    "Fintech, E-commerce, SaaS": "Fintech",
     "Fintech, Logistics, E-commerce": "Fintech",
     "Fintech, Retail": "Fintech",
+    "Fintech, Cybersecurity": "Fintech",
+    "Fintech, Media": "Fintech",
+    "Fintech, Tech/Software": "Fintech",
+    "Fintech or SaaS": "Fintech",
     # Cybersecurity
     "Cybersecurity, Digital Identity": "Cybersecurity",
+    "Cybersecurity, Defence, SaaS": "Cybersecurity",
+    "Cybersecurity, E-commerce, Media": "Cybersecurity",
+    "Cybersecurity, Fintech": "Cybersecurity",
+    "Cybersecurity, Gaming": "Cybersecurity",
+    "Cybersecurity, Networking": "Cybersecurity",
+    "Cybersecurity, SaaS": "Cybersecurity",
     "Security": "Cybersecurity",
+    "Security Services": "Cybersecurity",
+    "Security Technology": "Cybersecurity",
+    "Safety & Security": "Cybersecurity",
+    "Defense, Security, Technology": "Cybersecurity",
     "Security, Facilities Management, Customer Experience Technology": "Cybersecurity",
     # Logistics
     "Logistics, Cybersecurity": "Logistics",
@@ -233,40 +456,55 @@ INDUSTRY_NORMALIZE = {
     "Automotive/Transportation": "Logistics",
     "Public Transport": "Logistics",
     "Transportation/Autonomous Tech": "Logistics",
+    "Rail": "Logistics",
+    "Maritime Technology": "Logistics",
+    "Maritime Tech, B2B": "Logistics",
+    "Maritime Tech, B2B Tech": "Logistics",
     # SaaS
     "SaaS, Media": "SaaS",
-    # Social Media
+    "SaaS, Cybersecurity": "SaaS",
+    # Media
     "Social Media": "Media",
+    "Creative / Media": "Media",
+    "Photography": "Media",
+    "Lifestyle": "Media",
     # Professional Services
     "Business Services": "Professional Services",
+    "Corporate Services": "Professional Services",
     "Legal Tech": "Professional Services",
-    # Industrial Automation
-    "Industrial Automation": "Robotics",
-    # Semiconductor (keep as-is)
-    # Telecommunications (keep as-is)
+    # Government / Public Sector
+    "Public Sector": "Government",
+    "Public Services": "Government",
+    "Government Services": "Government",
+    "GovTech": "Government",
+    # Design
+    "Design": "Design",
+    # Telecommunications
     "Telecommunications, Cybersecurity": "Telecommunications",
+    "Technology, Telecommunications": "Telecommunications",
+    "Telecom": "Telecommunications",
     # Energy
     "Energy, Sustainability": "Energy",
-    # FMCG → Consumer Goods
+    "Energy Technology": "Energy",
+    "Water Technology": "Energy",
+    "Utilities": "Energy",
+    # Consumer Goods
     "FMCG": "Consumer Goods",
+    # Wholesale
+    "Wholesale Trade": "Wholesale",
     # Research
     "Research & Development": "Research",
+    # Automotive
+    "Mobility": "Automotive",
+    # Social Services
+    "Community Services": "Social Services",
     # Catch-all
     "Not specified": "Other",
     "Others": "Other",
     "Various": "Other",
     "Development": "Other",
     "Other": "Other",
-    "Mobility": "Automotive",
     "Cleaning Services": "Other",
-    "Community Services": "Social Services",
-    "Chemicals": "Manufacturing",
-    "Agribusiness": "Food & Beverage",
-    "Photography": "Media",
-    "Lifestyle": "Media",
-    "Sports": "Entertainment",
-    "Furniture": "Retail",
-    "Jewelry": "Retail",
 }
 
 
@@ -345,24 +583,31 @@ def normalize_seniority(sen):
     """Normalize seniority level, splitting compound values."""
     if not sen or sen.lower() in ("not specified", ""):
         return ["Not specified"]
-    parts = [p.strip() for p in sen.split(",")]
+    # Handle slash, comma, "or", "to", "and" separators
+    normalized = re.split(r"[,/]|\bor\b|\bto\b|\band\b", sen)
     valid = []
-    for p in parts:
+    for p in normalized:
         p_lower = p.strip().lower()
-        if p_lower in ("junior",):
+        if not p_lower or "not specified" in p_lower:
+            continue
+        if "junior" in p_lower:
             valid.append("Junior")
-        elif p_lower in ("senior",):
+        elif "senior" in p_lower:
             valid.append("Senior")
-        elif p_lower in ("lead",):
+        elif "lead" in p_lower or "manager" in p_lower:
             valid.append("Lead")
         elif "mid" in p_lower:
             valid.append("Mid-level")
-        elif "intern" in p_lower:
+        elif "intern" in p_lower or "trainee" in p_lower:
             valid.append("Intern")
         elif "fresh" in p_lower or "entry" in p_lower or "graduate" in p_lower:
             valid.append("Entry-level")
-        elif "not specified" not in p_lower and p.strip():
+        elif "associate" in p_lower:
+            valid.append("Junior")
+        elif p.strip():
             valid.append(p.strip())
+    # Dedupe preserving order
+    valid = list(dict.fromkeys(valid))
     return valid if valid else ["Not specified"]
 
 
