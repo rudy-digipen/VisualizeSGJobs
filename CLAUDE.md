@@ -114,6 +114,20 @@ These apply across all layers, all projects, all frameworks:
 
 ---
 
+## ETL Data Update Process
+
+When the user says the database has been updated with new analysis data:
+
+1. **Run audit first.** Run `python3 etl.py --audit` to get the normalization gap report. This runs the full ETL and then prints unmapped company types, industries, skill conflicts, and seniority pass-throughs with substring-match suggestions.
+2. **Review the report.** For each unmapped value, add an entry to the appropriate normalization map in `etl.py`:
+   - `COMPANY_TYPE_NORMALIZE` — maps to one of: MNC, SME, Agency, Consultancy, Startup, Government, Non-profit
+   - `INDUSTRY_NORMALIZE` — maps to a normalized industry name
+   - `SKILL_NORMALIZE` — only for semantic renames (e.g., `Golang→Go`) or brand casing overrides. Case-only duplicates are handled automatically by `build_case_canon_map()`.
+3. **Re-run** `python3 etl.py --audit` until the report shows all mapped.
+4. **Do not** manually query the DB for distinct values or scan for case duplicates — the audit does this automatically.
+
+---
+
 ## Git Commit Message Format
 
 When asked to generate a commit message from staged files:

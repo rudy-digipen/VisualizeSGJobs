@@ -11,6 +11,7 @@ Output files (in data/):
   - co-occurrence.json    Per-skill co-occurring skills
 """
 
+import argparse
 import json
 import os
 import re
@@ -40,150 +41,107 @@ BA_SKILL_COLUMNS = {
 
 # --- Normalization maps ---
 
+# Semantic skill renames only — case normalization is handled automatically
+# by build_case_canon_map(). Only add entries here for non-case changes:
+# renames (Golang→Go), consolidations (CI/CD Pipelines→CI/CD), or
+# brand casing that differs from the most-frequent variant.
 SKILL_NORMALIZE = {
-    # .NET family
+    # Renames / consolidations
+    "Golang": "Go",
+    "GoLang": "Go",
+    "CI/CD Pipelines": "CI/CD",
+    "CI/CD pipelines": "CI/CD",
+    "Agile methodology": "Agile Methodologies",
+    "Agile Methodology": "Agile Methodologies",
+    # Hyphen/spelling variants
+    "Auto-Cad": "AutoCAD",
+    "Sketch-up": "SketchUp",
+    # Brand casing overrides (where the most-frequent variant is wrong)
     ".Net": ".NET",
     ".Net Core": ".NET Core",
     ".Net Framework": ".NET Framework",
     "ASP.Net MVC": "ASP.NET MVC",
     "VB.Net": "VB.NET",
-    # 3D / Design tools
-    "3DS Max": "3ds Max",
-    "Autocad": "AutoCAD",
-    "Auto-Cad": "AutoCAD",
-    "CAD Software": "CAD software",
-    "Capcut": "CapCut",
-    "Davinci Resolve": "DaVinci Resolve",
-    "Hubspot": "HubSpot",
-    "Sketchup": "SketchUp",
-    "Sketch-up": "SketchUp",
-    "Protopie": "ProtoPie",
-    "Powerpoint": "PowerPoint",
-    "Solarwinds": "SolarWinds",
-    "Unifi": "UniFi",
-    # Languages & frameworks
     "Typescript": "TypeScript",
     "Javascript": "JavaScript",
     "Pytorch": "PyTorch",
-    "Golang": "Go",
-    "GoLang": "Go",
     "JQuery": "jQuery",
-    "Junit": "JUnit",
     "Vue.JS": "Vue.js",
-    "webpack": "Webpack",
-    "Websockets": "WebSockets",
     "xCode": "Xcode",
-    "Gitlab": "GitLab",
-    "Gitlab CI/CD": "GitLab CI/CD",
-    "Github Actions": "GitHub Actions",
-    "BitBucket": "Bitbucket",
-    "Cloudformation": "CloudFormation",
-    "Cloudfront": "CloudFront",
-    "Cloudwatch": "CloudWatch",
-    "Cocoapods": "CocoaPods",
-    "EtherCat": "EtherCAT",
-    "Profinet": "ProfiNet",
-    "Martech": "MarTech",
-    # CI/CD consolidation
-    "CI/CD Pipelines": "CI/CD",
-    "CI/CD pipelines": "CI/CD",
-    # Case normalization — concepts & domains
-    "async programming": "Async Programming",
-    "asynchronous programming": "Asynchronous Programming",
-    "Agile methodologies": "Agile Methodologies",
-    "Agile methodology": "Agile Methodologies",
-    "Agile Methodology": "Agile Methodologies",
-    "AI tools": "AI Tools",
-    "algorithms": "Algorithms",
-    "attention to detail": "Attention to Detail",
-    "automated testing": "Automated Testing",
-    "Automated testing": "Automated Testing",
-    "automation": "Automation",
-    "capital markets": "Capital Markets",
-    "Cloud computing": "Cloud Computing",
-    "cloud platforms": "Cloud Platforms",
-    "cloud services": "Cloud Services",
-    "Cloud technologies": "Cloud Technologies",
-    "compliance": "Compliance",
-    "concurrency": "Concurrency",
-    "CRM Systems": "CRM systems",
-    "customer service": "Customer Service",
-    "cybersecurity": "Cybersecurity",
-    "data analytics": "Data Analytics",
-    "data pipelines": "Data Pipelines",
-    "data structures": "Data Structures",
-    "databases": "Databases",
-    "Design systems": "Design Systems",
-    "Distributed systems": "Distributed Systems",
-    "distributed systems": "Distributed Systems",
-    "e-commerce": "E-commerce",
-    "Embedded systems": "Embedded Systems",
-    "ERP Systems": "ERP systems",
-    "finance": "Finance",
-    "FinTech": "Fintech",
-    "Game development": "Game Development",
-    "generative AI": "Generative AI",
-    "Healthcare systems": "Healthcare Systems",
-    "Information architecture": "Information Architecture",
-    "Interaction design": "Interaction Design",
-    "Interior design": "Interior Design",
-    "IT infrastructure": "IT Infrastructure",
-    "logistics": "Logistics",
-    "machine learning": "Machine Learning",
     "MacOS": "macOS",
-    "Microsoft Office suite": "Microsoft Office Suite",
-    "Microsoft design guidelines": "Microsoft Design Guidelines",
-    "Microsoft technologies": "Microsoft Technologies",
-    "Motion design": "Motion Design",
-    "MS suite": "MS Suite",
-    "networking": "Networking",
-    "numpy": "NumPy",
-    "Object-Oriented Programming": "Object-oriented programming",
-    "Object-Oriented Programming (OOP)": "Object-oriented programming (OOP)",
-    "operating systems": "Operating Systems",
-    "Pandas": "pandas",
-    "performance optimization": "Performance Optimization",
-    "problem-solving": "Problem-Solving",
-    "Problem-solving": "Problem-Solving",
-    "Prompt engineering": "Prompt Engineering",
-    "Responsive design": "Responsive Design",
-    "responsive design": "Responsive Design",
-    "retail": "Retail",
-    "risk": "Risk",
-    "risk management": "Risk Management",
-    "Scikit-Learn": "scikit-learn",
-    "SCRUM": "Scrum",
-    "security": "Security",
-    "servers": "Servers",
-    "Shell scripting": "Shell Scripting",
-    "social media": "Social Media",
-    "social media platforms": "Social Media Platforms",
-    "state management": "State Management",
-    "Statistical analysis": "Statistical Analysis",
-    "sustainability": "Sustainability",
-    "System design": "System Design",
-    "Test-driven development": "Test-Driven Development",
-    "testing": "Testing",
     "Tiktok": "TikTok",
-    "Trade lifecycle": "Trade Lifecycle",
-    "UI design": "UI Design",
-    "User experience": "User Experience",
-    "User flows": "User Flows",
-    "User research": "User Research",
-    "Visual design": "Visual Design",
-    "visualization": "Visualization",
-    # Platform case fixes
+    "FinTech": "Fintech",
+    "JIRA": "Jira",
+    "SCRUM": "Scrum",
     "AZURE": "Azure",
     "HIVE": "Hive",
-    "JIRA": "Jira",
-    "QT": "Qt",
     "UNIX": "Unix",
     "UBUNTU": "Ubuntu",
     "CENTOS": "CentOS",
-    "SoC": "SOC",
-    "bash": "Bash",
-    "matplotlib": "Matplotlib",
 }
+
+# Module-level case canon map, built once at ETL start
+_case_canon_map = {}
+
+
+def scan_skill_frequencies(conn):
+    """Pre-scan all skill columns to build raw skill → frequency counts."""
+    freq = Counter()
+    all_columns = [
+        ("job_cs_analysis", list(CS_SKILL_COLUMNS.keys())),
+        ("job_ba_analysis", list(BA_SKILL_COLUMNS.keys())),
+    ]
+    for table, cols in all_columns:
+        for col in cols:
+            for row in conn.execute(f"SELECT {col} FROM {table} WHERE {col} IS NOT NULL"):
+                val = row[0]
+                try:
+                    parsed = json.loads(val)
+                    if isinstance(parsed, list):
+                        for s in parsed:
+                            if isinstance(s, str) and s.strip():
+                                freq[s.strip()] += 1
+                except (json.JSONDecodeError, TypeError):
+                    for s in val.split(","):
+                        if s.strip():
+                            freq[s.strip()] += 1
+    return freq
+
+
+def build_case_canon_map(skill_freq):
+    """Group skills by lowercase, pick the most frequent casing as canonical.
+
+    Returns a dict mapping variant → canonical for non-canonical variants.
+    Entries already in SKILL_NORMALIZE are skipped (explicit takes precedence).
+    """
+    groups = defaultdict(list)
+    for skill, count in skill_freq.items():
+        groups[skill.lower()].append((skill, count))
+
+    canon_map = {}
+    for lower_key, variants in groups.items():
+        if len(variants) <= 1:
+            continue
+        # Pick the most frequent variant as canonical
+        variants.sort(key=lambda x: -x[1])
+        canonical = variants[0][0]
+        # Check if explicit map overrides any variant
+        for skill, _ in variants:
+            if skill in SKILL_NORMALIZE:
+                canonical = SKILL_NORMALIZE[skill]
+                break
+        for skill, _ in variants:
+            if skill != canonical and skill not in SKILL_NORMALIZE:
+                canon_map[skill] = canonical
+    return canon_map
+
+
+def init_skill_normalization(conn):
+    """Build the case canon map from DB data. Call once at ETL start."""
+    global _case_canon_map
+    freq = scan_skill_frequencies(conn)
+    _case_canon_map = build_case_canon_map(freq)
+    return freq
 
 COMPANY_TYPE_NORMALIZE = {
     # MNC variants
@@ -384,6 +342,7 @@ INDUSTRY_NORMALIZE = {
     "EdTech": "Education",
     "EdTech, SaaS": "Education",
     "EdTech, IT Services": "Education",
+    "Education Technology": "Education",
     "Higher Education": "Education",
     # Robotics
     "Robotics, Automation": "Robotics",
@@ -460,6 +419,7 @@ INDUSTRY_NORMALIZE = {
     "Maritime Technology": "Logistics",
     "Maritime Tech, B2B": "Logistics",
     "Maritime Tech, B2B Tech": "Logistics",
+    "Logistics, Industrial Automation": "Logistics",
     # SaaS
     "SaaS, Media": "SaaS",
     "SaaS, Cybersecurity": "SaaS",
@@ -505,12 +465,18 @@ INDUSTRY_NORMALIZE = {
     "Development": "Other",
     "Other": "Other",
     "Cleaning Services": "Other",
+    "Platform": "IT Services",
 }
 
 
 def normalize_skill(s):
-    """Normalize a skill name to its canonical form."""
-    return SKILL_NORMALIZE.get(s, s)
+    """Normalize a skill name to its canonical form.
+
+    Priority: explicit SKILL_NORMALIZE > auto case canon map > as-is.
+    """
+    if s in SKILL_NORMALIZE:
+        return SKILL_NORMALIZE[s]
+    return _case_canon_map.get(s, s)
 
 
 def normalize_company_type(ct):
@@ -604,7 +570,10 @@ def normalize_seniority(sen):
             valid.append("Entry-level")
         elif "associate" in p_lower:
             valid.append("Junior")
-        elif p.strip():
+        elif p.strip() and not any(
+            role in p_lower
+            for role in ("designer", "engineer", "developer", "analyst", "architect", "scientist")
+        ):
             valid.append(p.strip())
     # Dedupe preserving order
     valid = list(dict.fromkeys(valid))
@@ -674,6 +643,10 @@ def run_etl():
     """).fetchall()
 
     print(f"Loaded {len(jobs_raw)} active jobs")
+
+    # Build auto case-normalization map for skills
+    skill_freq = init_skill_normalization(conn)
+    print(f"  Skill case-canon map: {len(_case_canon_map)} auto-merged variants")
 
     # ------------------------------------------------------------------
     # 2. Load analyses keyed by job_id (pick first model per job)
@@ -964,5 +937,155 @@ def run_etl():
             print(f"  Python + {e['skill']}: {e['count']} jobs ({e['pct']}%)")
 
 
+def _suggest_target(raw_value, normalize_map):
+    """Suggest a normalization target using substring matching.
+
+    Checks if any existing map key is a substring of raw_value or vice versa,
+    then returns the target that key maps to.
+    """
+    raw_lower = raw_value.lower()
+    # Build reverse map: target → [keys]
+    targets = defaultdict(list)
+    for key, target in normalize_map.items():
+        targets[target].append(key)
+
+    # Check if raw_value contains an existing key as substring
+    for key, target in normalize_map.items():
+        if key.lower() in raw_lower and key.lower() != raw_lower:
+            return target
+    # Check if an existing key contains raw_value
+    for key, target in normalize_map.items():
+        if raw_lower in key.lower() and key.lower() != raw_lower:
+            return target
+    return None
+
+
+def audit_gaps(conn, skill_freq):
+    """Print a report of unmapped values that need manual normalization entries."""
+
+    print("\n" + "=" * 60)
+    print("  NORMALIZATION AUDIT REPORT")
+    print("=" * 60)
+
+    # --- Company types ---
+    valid_company_types = {"MNC", "SME", "Agency", "Consultancy", "Startup", "Government", "Non-profit"}
+    rows = conn.execute(
+        "SELECT company_type, COUNT(*) FROM job_company_analysis "
+        "WHERE company_type IS NOT NULL GROUP BY company_type ORDER BY COUNT(*) DESC"
+    ).fetchall()
+
+    unmapped_ct = []
+    for val, count in rows:
+        if not val:
+            continue
+        normalized = COMPANY_TYPE_NORMALIZE.get(val, val)
+        if normalized not in valid_company_types:
+            suggestion = _suggest_target(val, COMPANY_TYPE_NORMALIZE)
+            unmapped_ct.append((val, count, suggestion))
+
+    if unmapped_ct:
+        total_jobs = sum(c for _, c, _ in unmapped_ct)
+        print(f"\n--- UNMAPPED COMPANY TYPES ({len(unmapped_ct)} values, {total_jobs} jobs) ---")
+        for val, count, suggestion in unmapped_ct:
+            hint = f"  -> suggest: {suggestion}" if suggestion else ""
+            print(f"  {count:4d}  {val!r}{hint}")
+    else:
+        print("\n--- COMPANY TYPES: all mapped ---")
+
+    # --- Industries ---
+    valid_industries = set(INDUSTRY_NORMALIZE.values()) | {
+        "Food & Beverage", "E-commerce", "Retail", "Financial Services",
+        "Artificial Intelligence", "IT Services", "Recruitment", "Events",
+        "Advertising", "Marketing", "Consultancy", "Architecture",
+        "Construction", "Hospitality", "Healthcare", "Beauty", "Education",
+        "Robotics", "Manufacturing", "Electronics", "Real Estate", "Gaming",
+        "Entertainment", "Fintech", "Cybersecurity", "Logistics", "SaaS",
+        "Media", "Professional Services", "Telecommunications", "Energy",
+        "Consumer Goods", "Research", "Other", "Automotive", "Social Services",
+        "Semiconductor", "Insurance", "Aerospace", "Biotechnology",
+        "Blockchain", "IoT", "Design", "Wholesale", "Government",
+    }
+    rows = conn.execute(
+        "SELECT industry, COUNT(*) FROM job_company_analysis "
+        "WHERE industry IS NOT NULL GROUP BY industry ORDER BY COUNT(*) DESC"
+    ).fetchall()
+
+    unmapped_ind = []
+    for val, count in rows:
+        if not val:
+            continue
+        normalized = INDUSTRY_NORMALIZE.get(val, val)
+        if normalized not in valid_industries:
+            suggestion = _suggest_target(val, INDUSTRY_NORMALIZE)
+            unmapped_ind.append((val, count, suggestion))
+
+    if unmapped_ind:
+        total_jobs = sum(c for _, c, _ in unmapped_ind)
+        print(f"\n--- UNMAPPED INDUSTRIES ({len(unmapped_ind)} values, {total_jobs} jobs) ---")
+        for val, count, suggestion in unmapped_ind:
+            hint = f"  -> suggest: {suggestion}" if suggestion else ""
+            print(f"  {count:4d}  {val!r}{hint}")
+    else:
+        print("\n--- INDUSTRIES: all mapped ---")
+
+    # --- Skill case groups with remaining ambiguity ---
+    # After auto case-dedup, check for groups where explicit map disagrees
+    groups = defaultdict(list)
+    for skill, count in skill_freq.items():
+        canonical = normalize_skill(skill)
+        groups[canonical.lower()].append((skill, count, canonical))
+
+    ambiguous = []
+    for lower_key, variants in groups.items():
+        canonicals = set(v[2] for v in variants)
+        if len(canonicals) > 1:
+            ambiguous.append((lower_key, variants))
+
+    if ambiguous:
+        print(f"\n--- SKILL NORMALIZATION CONFLICTS ({len(ambiguous)} groups) ---")
+        for lower_key, variants in sorted(ambiguous):
+            parts = ", ".join(f"{v[0]}({v[1]})→{v[2]}" for v in sorted(variants, key=lambda x: -x[1]))
+            print(f"  {parts}")
+    else:
+        print("\n--- SKILLS: no normalization conflicts ---")
+
+    # --- Seniority pass-throughs ---
+    seniority_valid = {"Junior", "Senior", "Lead", "Mid-level", "Intern", "Entry-level", "Not specified"}
+    rows = conn.execute(
+        "SELECT seniority_level, COUNT(*) FROM job_cs_analysis "
+        "WHERE seniority_level IS NOT NULL GROUP BY seniority_level "
+        "UNION ALL "
+        "SELECT seniority_level, COUNT(*) FROM job_ba_analysis "
+        "WHERE seniority_level IS NOT NULL GROUP BY seniority_level"
+    ).fetchall()
+
+    seniority_passthrough = Counter()
+    for val, count in rows:
+        for s in normalize_seniority(val):
+            if s not in seniority_valid:
+                seniority_passthrough[s] += count
+
+    if seniority_passthrough:
+        print(f"\n--- SENIORITY PASS-THROUGHS ({len(seniority_passthrough)} values) ---")
+        for val, count in seniority_passthrough.most_common():
+            print(f"  {count:4d}  {val!r}")
+    else:
+        print("\n--- SENIORITY: all mapped ---")
+
+    print("\n" + "=" * 60)
+
+
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="ETL for SGTechSkillz dashboard")
+    parser.add_argument("--audit", action="store_true",
+                        help="Run normalization gap audit after ETL")
+    args = parser.parse_args()
+
     run_etl()
+
+    if args.audit:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        freq = scan_skill_frequencies(conn)
+        audit_gaps(conn, freq)
+        conn.close()
