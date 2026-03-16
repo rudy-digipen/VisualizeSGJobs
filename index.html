@@ -41,9 +41,7 @@
         <span class="theme-label">Auto</span>
       </button>
     </div>
-    <div class="header-stats" id="header-stats" aria-live="polite">
-      <!-- Populated by JS -->
-    </div>
+    <div class="header-stats" id="header-stats" aria-live="polite"></div>
   </header>
 
   <main class="dashboard">
@@ -77,22 +75,37 @@
     <section class="content" aria-label="Dashboard data">
       <!-- View Switcher -->
       <nav class="view-bar" role="tablist" aria-label="Dashboard views">
-        <button type="button" role="tab" class="view-btn" aria-selected="true" data-view="skills">Skills</button>
+        <button type="button" role="tab" class="view-btn" aria-selected="true" data-view="jobs">Jobs</button>
+        <button type="button" role="tab" class="view-btn" aria-selected="false" data-view="skills">Skills</button>
         <button type="button" role="tab" class="view-btn" aria-selected="false" data-view="companies">Companies & Industries</button>
         <button type="button" role="tab" class="view-btn" aria-selected="false" data-view="seniority">Seniority</button>
       </nav>
 
+      <!-- Time Range (global) -->
+      <div class="time-range" id="time-range" role="group" aria-label="Time range">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Jobs Panel (default) -->
+      <section class="view-panel" id="jobs-panel">
+        <div class="jobs-toolbar">
+          <p class="jobs-count" id="jobs-count"></p>
+          <div class="jobs-sort" id="jobs-sort" role="group" aria-label="Sort jobs">
+            <span class="jobs-sort-label">Sort</span>
+          </div>
+        </div>
+        <div class="jobs-skill-chips" id="jobs-skill-chips"></div>
+        <ul class="job-list jobs-main-list" id="jobs-list"></ul>
+        <button type="button" class="jobs-load-more" id="jobs-load-more" hidden>Show more jobs</button>
+        <p class="empty-state" id="jobs-empty" hidden>No jobs match your current filters.</p>
+      </section>
+
       <!-- Skills Panel -->
-      <section class="view-panel" id="skills-panel">
+      <section class="view-panel" id="skills-panel" hidden>
         <!-- Category Tabs -->
         <nav class="tab-bar" role="tablist" aria-label="Skill categories">
           <!-- Populated by JS -->
         </nav>
-
-        <!-- Time Range -->
-        <div class="time-range" id="time-range" role="group" aria-label="Time range">
-          <!-- Populated by JS -->
-        </div>
 
         <!-- Word Cloud Toggle -->
         <div class="view-controls">
@@ -173,22 +186,6 @@
       </section>
     </section>
   </main>
-
-  <!-- Drill-down Dialog -->
-  <dialog id="drill-down" class="drill-down">
-    <header class="drill-header">
-      <h2 class="drill-title" id="drill-title"></h2>
-      <span class="drill-count" id="drill-count"></span>
-      <button type="button" class="drill-close" id="drill-close" aria-label="Close">&times;</button>
-    </header>
-    <div class="co-occurrence" id="drill-cooccurrence" hidden>
-      <h3 class="co-occurrence-heading">Often paired with</h3>
-      <ul class="co-occurrence-list" id="co-occurrence-list"></ul>
-    </div>
-    <ul class="job-list" id="drill-jobs">
-      <!-- Populated by JS -->
-    </ul>
-  </dialog>
 
   <footer class="site-footer">
     <p>Data sourced from JobStreet Singapore. Skills extracted via LLM analysis.</p>

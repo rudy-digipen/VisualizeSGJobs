@@ -13,7 +13,7 @@
   let companiesData = {};
   let coOccurrenceData = {};
 
-  let activeView = "skills"; // "skills" | "companies" | "seniority" | "search-results"
+  let activeView = "jobs"; // "jobs" | "skills" | "companies" | "seniority" | "search-results"
   let activeTab = "All";
   let activeFilters = {
     workType: new Set(),
@@ -28,6 +28,11 @@
   let sortAsc = false;
   let searchQuery = "";
   let searchResults = [];
+  let activeSkillFilters = []; // [{ skill, category }, ...]
+  let jobsSortField = "date"; // "date" | "title" | "company" | "salary"
+  let jobsSortAsc = false;
+  let jobsPageSize = 25;
+  let jobsShown = 25;
 
   const TIME_RANGES = [
     { key: "all", label: "All time", months: null },
@@ -44,13 +49,6 @@
   const tabBar = document.querySelector(".tab-bar");
   const tbody = document.getElementById("skills-tbody");
   const emptyState = document.getElementById("empty-state");
-  const dialog = document.getElementById("drill-down");
-  const drillTitle = document.getElementById("drill-title");
-  const drillCount = document.getElementById("drill-count");
-  const drillClose = document.getElementById("drill-close");
-  const drillJobs = document.getElementById("drill-jobs");
-  const drillCooccurrence = document.getElementById("drill-cooccurrence");
-  const coOccurrenceList = document.getElementById("co-occurrence-list");
   const filterReset = document.getElementById("filter-reset");
   const timeRangeBar = document.getElementById("time-range");
   const viewBar = document.querySelector(".view-bar");
@@ -59,6 +57,14 @@
   const wordcloudToggle = document.getElementById("toggle-wordcloud");
   const wordcloudPanel = document.getElementById("wordcloud-panel");
   const wordcloudSvg = document.getElementById("wordcloud-svg");
+
+  // Jobs panel refs
+  const jobsList = document.getElementById("jobs-list");
+  const jobsCount = document.getElementById("jobs-count");
+  const jobsSkillChips = document.getElementById("jobs-skill-chips");
+  const jobsSortBar = document.getElementById("jobs-sort");
+  const jobsLoadMore = document.getElementById("jobs-load-more");
+  const jobsEmpty = document.getElementById("jobs-empty");
 
   // --- Init ---
   async function init() {
@@ -97,14 +103,14 @@
     document.querySelectorAll(".sort-btn").forEach((btn) =>
       btn.addEventListener("click", handleSort)
     );
-    drillClose.addEventListener("click", () => dialog.close());
-    dialog.addEventListener("click", (e) => {
-      if (e.target === dialog) dialog.close();
-    });
     filterReset.addEventListener("click", clearFilters);
     viewBar.addEventListener("click", handleViewClick);
     themeToggle.addEventListener("click", toggleTheme);
     wordcloudToggle.addEventListener("click", handleWordcloudToggle);
+    jobsLoadMore.addEventListener("click", loadMoreJobs);
+    jobsSkillChips.addEventListener("click", handleChipClick);
+    jobsSortBar.addEventListener("click", handleJobsSortClick);
+    jobsList.addEventListener("click", handleJobsListClick);
 
     let searchTimeout;
     searchInput.addEventListener("input", () => {
@@ -112,7 +118,7 @@
       searchTimeout = setTimeout(() => {
         searchQuery = searchInput.value.trim().toLowerCase();
         if (searchQuery.length < 2) {
-          if (activeView === "search-results") switchView("skills");
+          if (activeView === "search-results") switchView("jobs");
           searchResults = [];
           pushStateToURL();
           return;
@@ -167,7 +173,7 @@
   // ================================================================
   function pushStateToURL() {
     const params = new URLSearchParams();
-    if (activeView !== "skills") params.set("view", activeView);
+    if (activeView !== "jobs") params.set("view", activeView);
     if (activeTab !== "All") params.set("tab", activeTab);
     if (activeTimeRangeKey !== "all") params.set("time", activeTimeRangeKey);
     if (searchQuery) params.set("q", searchQuery);
@@ -214,11 +220,16 @@
   // HEADER STATS
   // ================================================================
   function renderHeaderStats() {
-    const jobsWithSkills = allJobs.filter((j) => Object.keys(j.skills).length > 0).length;
+    // Find the most recent job date as "last updated"
+    let latestDate = "";
+    for (const job of allJobs) {
+      if (job.date && job.date > latestDate) latestDate = job.date;
+    }
+    const lastUpdated = latestDate ? formatDate(latestDate) : "—";
+
     headerStats.innerHTML =
       `<span><span class="stat-value">${allJobs.length.toLocaleString()}</span> jobs</span>` +
-      `<span><span class="stat-value">${jobsWithSkills.toLocaleString()}</span> analyzed</span>` +
-      `<span><span class="stat-value">${Object.keys(skillsSummary).length - 1}</span> categories</span>`;
+      `<span>Updated <span class="stat-value">${lastUpdated}</span></span>`;
   }
 
   // ================================================================
@@ -254,6 +265,7 @@
     activeTimeRangeKey = pill.dataset.rangeKey;
     const months = pill.dataset.rangeMonths === "null" ? null : Number(pill.dataset.rangeMonths);
     activeTimeRange = getCutoffDate(months);
+    jobsShown = jobsPageSize;
 
     timeRangeBar.querySelectorAll(".time-pill").forEach((p) =>
       p.setAttribute("aria-pressed", p === pill)
@@ -319,11 +331,12 @@
     document.querySelectorAll(".view-panel").forEach((p) => (p.hidden = true));
 
     const panelId =
+      activeView === "jobs" ? "jobs-panel" :
       activeView === "skills" ? "skills-panel" :
       activeView === "companies" ? "companies-panel" :
       activeView === "seniority" ? "seniority-panel" :
       activeView === "search-results" ? "search-panel" :
-      "skills-panel";
+      "jobs-panel";
 
     const panel = document.getElementById(panelId);
     if (panel) panel.hidden = false;
@@ -333,7 +346,8 @@
   }
 
   function renderActiveView() {
-    if (activeView === "skills") renderTable();
+    if (activeView === "jobs") renderJobsView();
+    else if (activeView === "skills") renderTable();
     else if (activeView === "companies") renderCompaniesView();
     else if (activeView === "seniority") renderSeniorityView();
     else if (activeView === "search-results") renderSearchResults();
@@ -368,6 +382,7 @@
         } else {
           activeFilters[filterKey].delete(opt.value);
         }
+        jobsShown = jobsPageSize;
         updateFilterResetVisibility();
         updateFilterCounts();
         renderActiveView();
@@ -459,6 +474,8 @@
     for (const dim of FILTER_DIMENSIONS) activeFilters[dim].clear();
     activeTimeRange = null;
     activeTimeRangeKey = "all";
+    activeSkillFilters = [];
+    jobsShown = jobsPageSize;
 
     document.querySelectorAll(".filter-option input").forEach((cb) => {
       cb.checked = false;
@@ -477,7 +494,8 @@
   function updateFilterResetVisibility() {
     const hasFilters =
       FILTER_DIMENSIONS.some((d) => activeFilters[d].size > 0) ||
-      activeTimeRangeKey !== "all";
+      activeTimeRangeKey !== "all" ||
+      activeSkillFilters.length > 0;
     filterReset.hidden = !hasFilters;
   }
 
@@ -569,7 +587,7 @@
     tbody.querySelectorAll(".skill-link").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
-        openDrillDown(
+        setSkillFilter(
           decodeURIComponent(link.dataset.skill),
           decodeURIComponent(link.dataset.category)
         );
@@ -830,7 +848,7 @@
 
     wordcloudSvg.querySelectorAll("text").forEach((t) => {
       t.addEventListener("click", () => {
-        openDrillDown(
+        setSkillFilter(
           decodeURIComponent(t.dataset.skill),
           decodeURIComponent(t.dataset.category)
         );
@@ -839,45 +857,193 @@
   }
 
   // ================================================================
-  // DRILL-DOWN DIALOG
+  // JOBS VIEW
   // ================================================================
-  function openDrillDown(skillName, category) {
-    const filteredJobIndices = getFilteredJobIndices();
-    const skills = skillsSummary[category] || [];
-    const skillData = skills.find((s) => s.skill === skillName);
+  const JOBS_SORT_OPTIONS = [
+    { key: "date", label: "Date", defaultAsc: false },
+    { key: "title", label: "Title", defaultAsc: true },
+    { key: "company", label: "Company", defaultAsc: true },
+    { key: "salary", label: "Salary", defaultAsc: false },
+  ];
 
-    if (!skillData) return;
+  function getFilteredJobs() {
+    const filteredIndices = getFilteredJobIndices();
 
-    const matchingIndices = skillData.jobIndices.filter((idx) => filteredJobIndices.has(idx));
-    const matchingJobs = matchingIndices.map((idx) => allJobs[idx]);
-    matchingJobs.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    // Start with all jobs passing sidebar + time filters
+    let indexSet = filteredIndices;
 
-    drillTitle.textContent = skillName;
-    drillCount.textContent = `${matchingJobs.length} job${matchingJobs.length !== 1 ? "s" : ""}`;
-
-    // Co-occurrence
-    const coData = coOccurrenceData[skillName];
-    if (coData && coData.length > 0) {
-      coOccurrenceList.innerHTML = coData
-        .map(
-          (c) =>
-            `<li><button type="button" class="co-occurrence-tag" data-skill="${encodeURIComponent(c.skill)}">${escapeHtml(c.skill)} <span class="co-pct">${c.pct}%</span></button></li>`
-        )
-        .join("");
-      drillCooccurrence.hidden = false;
-
-      coOccurrenceList.querySelectorAll(".co-occurrence-tag").forEach((tag) => {
-        tag.addEventListener("click", () => {
-          dialog.close();
-          openDrillDown(decodeURIComponent(tag.dataset.skill), "All");
-        });
-      });
-    } else {
-      drillCooccurrence.hidden = true;
+    // Narrow by each active skill filter (AND logic)
+    if (activeSkillFilters.length > 0) {
+      for (const sf of activeSkillFilters) {
+        const skills = skillsSummary[sf.category] || [];
+        const skillData = skills.find((s) => s.skill === sf.skill);
+        if (skillData) {
+          const skillIndices = new Set(skillData.jobIndices);
+          const narrowed = new Set();
+          for (const idx of indexSet) {
+            if (skillIndices.has(idx)) narrowed.add(idx);
+          }
+          indexSet = narrowed;
+        } else {
+          indexSet = new Set();
+          break;
+        }
+      }
     }
 
-    drillJobs.innerHTML = matchingJobs.map((job) => renderJobCard(job)).join("");
-    dialog.showModal();
+    const jobs = [];
+    for (const idx of indexSet) jobs.push(allJobs[idx]);
+
+    // Sort
+    jobs.sort((a, b) => {
+      let cmp = 0;
+      if (jobsSortField === "date") {
+        cmp = (a.date || "").localeCompare(b.date || "");
+      } else if (jobsSortField === "title") {
+        cmp = (a.title || "").localeCompare(b.title || "");
+      } else if (jobsSortField === "company") {
+        cmp = (a.company || "").localeCompare(b.company || "");
+      } else if (jobsSortField === "salary") {
+        const sa = a.parsedSalary ? a.parsedSalary.max : 0;
+        const sb = b.parsedSalary ? b.parsedSalary.max : 0;
+        cmp = sa - sb;
+      }
+      return jobsSortAsc ? cmp : -cmp;
+    });
+
+    return jobs;
+  }
+
+  function renderJobsView() {
+    const jobs = getFilteredJobs();
+
+    // Skill filter chips
+    renderSkillChips();
+
+    // Sort bar
+    renderJobsSortBar();
+
+    // Count
+    jobsCount.textContent = `${jobs.length} job${jobs.length !== 1 ? "s" : ""}`;
+
+    if (jobs.length === 0) {
+      jobsList.innerHTML = "";
+      jobsLoadMore.hidden = true;
+      jobsEmpty.hidden = false;
+      return;
+    }
+
+    jobsEmpty.hidden = true;
+    const toShow = jobs.slice(0, jobsShown);
+    jobsList.innerHTML = toShow.map((job) => renderJobCard(job)).join("");
+    jobsLoadMore.hidden = jobs.length <= jobsShown;
+    if (!jobsLoadMore.hidden) {
+      jobsLoadMore.textContent = `Show more (${jobs.length - jobsShown} remaining)`;
+    }
+  }
+
+  function renderSkillChips() {
+    if (activeSkillFilters.length === 0) {
+      jobsSkillChips.innerHTML = "";
+      return;
+    }
+
+    const chips = activeSkillFilters.map((sf, i) =>
+      `<span class="jobs-filter-chip">
+        ${escapeHtml(sf.skill)}
+        <button type="button" class="jobs-chip-remove" data-chip-index="${i}" aria-label="Remove ${escapeHtml(sf.skill)}">&times;</button>
+      </span>`
+    );
+
+    if (activeSkillFilters.length > 1) {
+      chips.push('<button type="button" class="jobs-chips-clear">Clear all</button>');
+    }
+
+    jobsSkillChips.innerHTML = chips.join("");
+  }
+
+  function renderJobsSortBar() {
+    const existing = jobsSortBar.querySelectorAll(".jobs-sort-btn");
+    if (existing.length > 0) {
+      // Just update pressed state
+      existing.forEach((btn) => {
+        const key = btn.dataset.sortKey;
+        const active = key === jobsSortField;
+        btn.setAttribute("aria-pressed", active);
+        const dir = btn.querySelector(".jobs-sort-dir");
+        if (dir) dir.textContent = active ? (jobsSortAsc ? "\u25B2" : "\u25BC") : "";
+      });
+      return;
+    }
+
+    // First render
+    const buttons = JOBS_SORT_OPTIONS.map((opt) => {
+      const active = opt.key === jobsSortField;
+      const dir = active ? (jobsSortAsc ? "\u25B2" : "\u25BC") : "";
+      return `<button type="button" class="jobs-sort-btn" aria-pressed="${active}" data-sort-key="${opt.key}">
+        ${opt.label}<span class="jobs-sort-dir">${dir}</span>
+      </button>`;
+    });
+    jobsSortBar.innerHTML = '<span class="jobs-sort-label">Sort</span>' + buttons.join("");
+  }
+
+  function handleJobsSortClick(e) {
+    const btn = e.target.closest(".jobs-sort-btn");
+    if (!btn) return;
+    const key = btn.dataset.sortKey;
+
+    if (key === jobsSortField) {
+      jobsSortAsc = !jobsSortAsc;
+    } else {
+      jobsSortField = key;
+      jobsSortAsc = JOBS_SORT_OPTIONS.find((o) => o.key === key).defaultAsc;
+    }
+
+    jobsShown = jobsPageSize;
+    renderJobsView();
+  }
+
+  function handleChipClick(e) {
+    const removeBtn = e.target.closest(".jobs-chip-remove");
+    if (removeBtn) {
+      const idx = Number(removeBtn.dataset.chipIndex);
+      activeSkillFilters.splice(idx, 1);
+      jobsShown = jobsPageSize;
+      renderJobsView();
+      return;
+    }
+
+    const clearBtn = e.target.closest(".jobs-chips-clear");
+    if (clearBtn) {
+      activeSkillFilters = [];
+      jobsShown = jobsPageSize;
+      renderJobsView();
+    }
+  }
+
+  function handleJobsListClick(e) {
+    const tag = e.target.closest(".skill-tag-clickable");
+    if (!tag) return;
+    setSkillFilter(
+      decodeURIComponent(tag.dataset.skill),
+      decodeURIComponent(tag.dataset.category)
+    );
+  }
+
+  function loadMoreJobs() {
+    jobsShown += jobsPageSize;
+    renderJobsView();
+  }
+
+  function setSkillFilter(skillName, category) {
+    // Don't add duplicates
+    if (activeSkillFilters.some((sf) => sf.skill === skillName && sf.category === category)) {
+      switchView("jobs");
+      return;
+    }
+    activeSkillFilters.push({ skill: skillName, category });
+    jobsShown = jobsPageSize;
+    switchView("jobs");
   }
 
   // ================================================================
@@ -935,7 +1101,7 @@
     const tags = Object.entries(skills).flatMap(([cat, list]) =>
       list.map(
         (s) =>
-          `<span class="skill-tag" title="${escapeHtml(cat)}">${escapeHtml(s)}</span>`
+          `<button type="button" class="skill-tag skill-tag-clickable" title="${escapeHtml(cat)}" data-skill="${encodeURIComponent(s)}" data-category="${encodeURIComponent(cat)}">${escapeHtml(s)}</button>`
       )
     );
     if (tags.length === 0) return "";
