@@ -164,9 +164,24 @@ COMPANY_TYPE_NORMALIZE = {
     "Established Company": "MNC",
     "Game Studio, MNC": "MNC",
     "Agency, MNC": "MNC",
+    "Multinational Tech Company": "MNC",
+    "Major MNC": "MNC",
+    "MNC Agency": "MNC",
+    "Fintech Company": "MNC",
+    "Enterprise Software Company": "MNC",
+    "Insurance Company": "MNC",
+    "Automotive Company": "MNC",
+    "Construction Company": "MNC",
+    "Medical Group": "MNC",
+    "Financial Services": "MNC",
+    "Global Banking & Finance (GBF)": "MNC",
+    "High-Frequency Trading Firm": "MNC",
     # Startup
     "Fintech Startup": "Startup",
     "Scale-up": "Startup",
+    "Tech Startup": "Startup",
+    "High-Growth Startup": "Startup",
+    "Startup Factory": "Startup",
     # SME variants
     "Startup or SME": "SME",
     "Diversified SME": "SME",
@@ -182,24 +197,44 @@ COMPANY_TYPE_NORMALIZE = {
     "Software Company": "SME",
     "Workspace Provider": "SME",
     "Venture Capital": "SME",
+    "Venture Capital Firm": "SME",
+    "Specialized Tech SME": "SME",
+    "Specialized Company": "SME",
+    "SaaS Provider": "SME",
+    "Regional HR Technology Company": "SME",
+    "Private Company": "SME",
+    "MNC, Game Studio": "SME",
+    "General Technology": "SME",
+    "Brand": "SME",
     # Agency
     "Staffing Agency": "Agency",
     "Recruitment Agency": "Agency",
+    "Research Agency": "Agency",
+    "Marketing Agency": "Agency",
     # Consultancy
     "SME/Consultancy": "Consultancy",
+    "consultancy": "Consultancy",
     # Government / Education
     "Educational Institution": "Government",
     "Education": "Government",
     "University": "Government",
     "Government Agency": "Government",
     "Government-Linked Company": "Government",
+    "Education Provider": "Government",
+    "Education Sector": "Government",
+    "Education Institution": "Government",
     # Non-profit
     "Nonprofit": "Non-profit",
     "Non-profit": "Non-profit",
     "Non-profit Organization": "Non-profit",
+    "Non-Profit Organization": "Non-profit",
+    "Non-Profit Agency": "Non-profit",
+    "Not-for-profit": "Non-profit",
     "Charity": "Non-profit",
     "Charity/Non-Profit": "Non-profit",
     "Social Enterprise": "Non-profit",
+    # Catch-all
+    "Unclear": "SME",
 }
 
 INDUSTRY_NORMALIZE = {
@@ -466,6 +501,164 @@ INDUSTRY_NORMALIZE = {
     "Other": "Other",
     "Cleaning Services": "Other",
     "Platform": "IT Services",
+    # --- Batch 2026-03-16 ---
+    # IT Services variants
+    "Fintech, Enterprise Software": "IT Services",
+    "Design/Architecture": "IT Services",
+    "Cybersecurity, Smart City Technology": "IT Services",
+    "Travel/Tech": "IT Services",
+    "Technology, Staffing": "IT Services",
+    "Technology, Enterprise Software": "IT Services",
+    "Technology, Consumer Goods": "IT Services",
+    "Technology, Consulting, Business Process Management": "IT Services",
+    "Tech/IT Services": "IT Services",
+    "Tech Services": "IT Services",
+    "Sports Technology": "IT Services",
+    "Software/IT Services": "IT Services",
+    "Software/IT": "IT Services",
+    "Software & Internet Services": "IT Services",
+    "Smart City Technology": "IT Services",
+    "SaaS, Technology": "IT Services",
+    "SaaS, HR Technology": "IT Services",
+    "SaaS, GovTech": "IT Services",
+    "SaaS, Fintech, E-commerce, Healthcare, Media": "IT Services",
+    "Recruitment/HR Services": "IT Services",
+    "Real Estate, Construction Technology": "IT Services",
+    "PropTech": "IT Services",
+    "Mobility, Logistics": "IT Services",
+    "Media, Cybersecurity": "IT Services",
+    "Maritime/Shipbuilding": "IT Services",
+    "Maritime and Offshore Engineering": "IT Services",
+    "Manufacturing Technology": "IT Services",
+    "Information Technology": "IT Services",
+    "Industrial Automation, Energy Management, Software": "IT Services",
+    "IT Services/Consulting": "IT Services",
+    "IT Services, Fintech, GovTech": "IT Services",
+    "Hospitality & Tourism Technology": "IT Services",
+    "High-Tech": "IT Services",
+    "Healthcare and Technology": "IT Services",
+    "Government, Enterprise Software": "IT Services",
+    "Government Technology": "IT Services",
+    "Gaming, Tech/Software": "IT Services",
+    "Fintech, SaaS": "IT Services",
+    "Fintech, Logistics": "IT Services",
+    "Fintech, IoT": "IT Services",
+    "Fintech, GovTech": "IT Services",
+    "Fintech, Gaming, E-commerce, Healthcare, SaaS, Media, Logistics, Cybersecurity, Semiconductor": "IT Services",
+    "FinTech": "Fintech",
+    "EdTech, HR Tech": "IT Services",
+    "E-commerce, Fintech": "IT Services",
+    "Cybersecurity, Technology": "IT Services",
+    "Cybersecurity, Logistics, Smart City": "IT Services",
+    "Cybersecurity, Logistics, Media, SaaS": "IT Services",
+    "Cybersecurity, IoT, Digital Identity": "IT Services",
+    "Cybersecurity, Fintech, Digital Identity": "IT Services",
+    "Cybersecurity, Enterprise Software": "IT Services",
+    "Cybersecurity, Defence, Smart City": "IT Services",
+    "Cultural Heritage": "IT Services",
+    "Consulting, Technology Services": "IT Services",
+    "Communications Technology": "IT Services",
+    "Aviation, Infrastructure": "IT Services",
+    "Autonomous Technology": "IT Services",
+    # Manufacturing variants
+    "Industrial Equipment": "Manufacturing",
+    "Engineering Services": "Manufacturing",
+    "Precision Engineering": "Manufacturing",
+    "Industrial Products": "Manufacturing",
+    "Printer Manufacturing": "Manufacturing",
+    "Manufacturing, Plastics": "Manufacturing",
+    "Manufacturing, Logistics": "Manufacturing",
+    "Manufacturing, Construction": "Manufacturing",
+    "Heavy Manufacturing": "Manufacturing",
+    "Heavy Industry": "Manufacturing",
+    "Chemical Manufacturing": "Manufacturing",
+    # Retail variants
+    "Fashion": "Retail",
+    "Travel": "Retail",
+    "Luxury Fashion": "Retail",
+    "Fashion Retail": "Retail",
+    "Apparel/Retail": "Retail",
+    "Travel Retail": "Retail",
+    "Retail, Publishing, FMCG": "Retail",
+    "Retail, Consumer Goods, Advertising": "Retail",
+    "Retail or Consumer Goods": "Retail",
+    # Defense / Cybersecurity
+    "Defense": "Cybersecurity",
+    "Aerospace/Defense": "Cybersecurity",
+    # Robotics variants
+    "Robotics and Automation": "Robotics",
+    "Robotics, IoT": "Robotics",
+    "Robotics, Defense, Aerospace": "Robotics",
+    "Industrial Automation & Energy Management": "Robotics",
+    "Automation/Control Systems": "Robotics",
+    # AI variants
+    "Sustainable Technology": "Artificial Intelligence",
+    "AI, Video Intelligence": "Artificial Intelligence",
+    "AI, SaaS, Technology": "Artificial Intelligence",
+    "E-commerce, AI, Technology": "Artificial Intelligence",
+    "Paints & Coatings": "Manufacturing",
+    # Energy
+    "Energy Management": "Energy",
+    "Energy, Technology, Sustainability": "Energy",
+    "Energy, Industrial Automation": "Energy",
+    "Energy Management, Automation, Sustainability": "Energy",
+    "Oil and Gas": "Energy",
+    "Oil & Gas": "Energy",
+    # Recruitment
+    "staffing": "Recruitment",
+    "HR": "Recruitment",
+    # Food & Beverage
+    "F&B/Hospitality": "Food & Beverage",
+    "Beverage": "Food & Beverage",
+    # Consumer Goods
+    "FMCG/Consumer Goods": "Consumer Goods",
+    # Electronics
+    "Consumer Electronics, IoT": "Electronics",
+    "Electronics, Embedded Systems": "Electronics",
+    "Semiconductor, Electronics": "Electronics",
+    # Design
+    "Design Agency": "Design",
+    # Advertising
+    "Agency": "Advertising",
+    # Fintech
+    "Financial Services/Insurance": "Financial Services",
+    "E-commerce, SaaS": "E-commerce",
+    # Entertainment / Events
+    "Event Agency": "Events",
+    "Arts & Culture": "Entertainment",
+    "Culture & Arts": "Entertainment",
+    "Cultural/Museums": "Entertainment",
+    "Creative/Media": "Media",
+    # Logistics
+    "Logistics, Manufacturing": "Logistics",
+    "E-commerce, Logistics": "Logistics",
+    # Hospitality
+    "Tourism/Attractions": "Hospitality",
+    "Hotel and Accommodation Services": "Hospitality",
+    # Embedded / IoT
+    "Embedded Systems, IoT": "Electronics",
+    "Semiconductor, Pharmaceuticals": "Semiconductor",
+    # Gaming
+    "Gaming, SaaS": "Gaming",
+    # Government
+    "e-government": "Government",
+    "Government Sector": "Government",
+    # Other
+    "Market Research": "Research",
+    "Data Services": "IT Services",
+    "Legal Services": "Professional Services",
+    "Corporate Gifting": "Retail",
+    "Waste Management": "Other",
+    "Environmental Services": "Other",
+    "Packaging": "Manufacturing",
+    "Home Services": "Other",
+    "Health & Wellness": "Healthcare",
+    "Healthcare, Manufacturing": "Healthcare",
+    "Marine and Offshore": "Manufacturing",
+    "Telco": "Telecommunications",
+    "Automotive, SaaS": "Automotive",
+    "HVAC": "Manufacturing",
+    "Rail Transport": "Logistics",
 }
 
 
@@ -570,6 +763,12 @@ def normalize_seniority(sen):
             valid.append("Entry-level")
         elif "associate" in p_lower:
             valid.append("Junior")
+        elif "principal" in p_lower:
+            valid.append("Senior")
+        elif "director" in p_lower:
+            valid.append("Lead")
+        elif "lecturer" in p_lower:
+            valid.append("Mid-level")
         elif p.strip() and not any(
             role in p_lower
             for role in ("designer", "engineer", "developer", "analyst", "architect", "scientist")
